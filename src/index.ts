@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { userModel } from "./db";
+import { hashPassword } from "./utils/helpers";
 
 const app = express();
 app.use(express.json());
@@ -12,7 +13,8 @@ app.get("/", (req,res)=>{
 })
 
 app.post("/api/v1/signup", async(req, res)=>{
-    const {userName, password, userEmail} = req.body;
+    const {userName, userEmail} = req.body;
+    const password = hashPassword(req.body.password);
     await userModel.create({userEmail, userName, password});
     res.json({
         msg: "User Created Successfully"
