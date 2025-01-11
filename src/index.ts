@@ -5,16 +5,21 @@ import { userModel } from "./db";
 
 const app = express();
 app.use(express.json());
+const PORT = 3000;
 
-app.post("/api/v1/signin", async(req, res)=>{
-    const {userName, password} = req.body;
-    await userModel.create({userName, password});
+app.get("/", (req,res)=>{
+    res.send("Your server is up and running well !")
+})
+
+app.post("/api/v1/signup", async(req, res)=>{
+    const {userName, password, userEmail} = req.body;
+    await userModel.create({userEmail, userName, password});
     res.json({
         msg: "User Created Successfully"
     })
 });
 
-app.post("/api/v1/signup", (req, res)=>{
+app.post("/api/v1/signin", (req, res)=>{
 
 });
 
@@ -37,3 +42,7 @@ app.post("/api/v1/brain/share", (req, res)=>{
 app.post("/api/v1/brain/:share", (req, res)=>{
 
 });
+
+app.listen(PORT, ()=>{
+    console.log(`Site is hosted on localhost: ${PORT}`)
+})

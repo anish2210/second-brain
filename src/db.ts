@@ -9,6 +9,10 @@ if (!dbUri) {
 mongoose.connect(dbUri).then(() => console.log("Connection to DB successful")).catch((error)=>console.error(error));
 
 const userSchema = new Schema({
+  userEmail:{
+    type: String,
+    require: true
+  },
   userName: {
     type: String,
     require: true,
@@ -17,7 +21,7 @@ const userSchema = new Schema({
   password: {
     type: String,
     require: true,
-  },
+  }  
 });
 
 export const userModel = model("Users", userSchema);
