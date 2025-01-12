@@ -1,8 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import { userModel } from "./db";
-import { hashPassword } from "./utils/helpers";
+import { userModel } from "./database/model";
+import { comparePassword, hashPassword } from "./utils/helpers";
 
 const app = express();
 app.use(express.json());
@@ -21,8 +21,27 @@ app.post("/api/v1/signup", async(req, res)=>{
     })
 });
 
-app.post("/api/v1/signin", (req, res)=>{
-
+app.post("/api/v1/signin", async (req, res)=>{
+    const { userName, password } = req.body;
+    // in user the complete detail of the user will be returned.
+    const user = await userModel.findOne({userName});
+    if (!user) {
+        res.status(401).json({
+            msg:"Invalid userName"
+        });
+        return;
+    }
+    const isPasswordValid = comparePassword(password, user.password);
+    if (!isPasswordValid) {
+        res.status(401).json({
+            msg:"Incorrect Password"
+        })
+    }
+    
+    res.json({
+        msg:"SignIn Successful",
+        user
+    })
 });
 
 app.post("/api/v1/content", (req, res)=>{
