@@ -1,8 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import { userModel } from "./database/model";
+import { ContentModel, userModel } from "./database/model";
 import { comparePassword, hashPassword } from "./utils/helpers";
+import dotenv from "dotenv";
+import { userMiddleware } from "./middleware/middleware";
+
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -27,7 +31,7 @@ app.post("/api/v1/signin", async (req, res)=>{
     const user = await userModel.findOne({userName});
     if (!user) {
         res.status(401).json({
-            msg:"Invalid userName"
+            msg:"Invalid Credentials"
         });
         return;
     }
@@ -36,20 +40,42 @@ app.post("/api/v1/signin", async (req, res)=>{
         res.status(401).json({
             msg:"Incorrect Password"
         })
+        return;
     }
-    
+
+    const token = jwt.sign({id: user._id, userName: user.userName}, process.env.JWT_SECRET as string, {expiresIn: '1d'});
+
     res.json({
         msg:"SignIn Successful",
-        user
+        user,
+        token
     })
 });
 
-app.post("/api/v1/content", (req, res)=>{
-
+app.post("/api/v1/content", userMiddleware, async(req, res)=>{
+    const link = req.body.link;
+    const type = req.body.type;
+    await ContentModel.create({
+        link,
+        type,
+        // @ts-ignore
+        userId: req.userId,
+        tags:[]
+    })
+    res.json({
+        msg:"Content added"
+    })
 });
 
-app.get("/api/v1/content", (req, res)=>{
-
+app.get("/api/v1/content", userMiddleware, async(req, res)=>{
+    // @ts-ignore
+    const userId = req.userId;
+    const content =  await ContentModel.find({
+        userId
+    })
+    res.json({
+        content
+    })
 });
 
 app.delete("/api/v1/content", (req, res)=>{

@@ -20,4 +20,12 @@ const userSchema = new Schema<IUser>({
     password: { type: String, required: true }
 });
 
+const ContentSchema = new Schema({
+  title:String,
+  link: String,
+  tags: [{type: mongoose.Types.ObjectId, ref: 'Tag'}],
+  userId: {type: mongoose.Types.ObjectId, ref: 'User'}
+})
+
 export const userModel = mongoose.model<IUser>('User', userSchema);
+export const ContentModel = mongoose.model("Content", ContentSchema);
