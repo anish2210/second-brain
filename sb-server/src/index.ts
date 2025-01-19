@@ -5,11 +5,13 @@ import { ContentModel, LinkModel, userModel } from "./database/model";
 import { comparePassword, hashPassword, random } from "./utils/helpers";
 import dotenv from "dotenv";
 import { userMiddleware } from "./middleware/middleware";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const PORT = 3000;
 
 app.get("/", (req, res) => {
