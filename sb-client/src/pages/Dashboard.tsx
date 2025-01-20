@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
@@ -6,9 +6,18 @@ import { CreateComponentModal } from "../components/CreateContentModal";
 import { PlusIcon } from "../icons/PlusIcon";
 import { ShareIcon } from "../icons/ShareIcon";
 import { Sidebar } from "../components/Sidebar";
+import { useContent } from "../hooks/useContent";
+import axios from "axios";
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
+  const {contents, refresh} = useContent();
+  const url = import.meta.env.VITE_BACKEND_URL;
+
+  useEffect(()=>{
+    refresh()
+  }, [modalOpen])
+  
   return (
     <div className="bg-green-600 min-h-screen">
       <div className="">
@@ -26,6 +35,18 @@ export function Dashboard() {
           <div className="text-white text-2xl font-bold">All Notes</div>
           <div className="flex gap-4 justify-end">
             <Button
+              onClick={async ()=>{
+                const response = await axios.post(`${url}/api/v1/brain/share`, {
+                  share: true
+                }, {
+                  headers:{
+                    "Authorization": localStorage.getItem("token")
+                  }
+                });
+                const shareUrl = `${url}/api/v1${response.data.msg}`;
+                navigator.clipboard.writeText(shareUrl);
+                alert("Share URL copied to clipboard.");
+              }}
               variant="secondary"
               text="Share Brain"
               startIcon={<ShareIcon size="md" />}
@@ -41,21 +62,9 @@ export function Dashboard() {
           </div>
         </div>
         <div className="flex flex-wrap gap-4 pt-4 items-start">
-          <Card
-            title="first Post"
-            link="https://x.com/Anish_2210/status/1880180943199301937"
-            type="twitter"
-          />
-          <Card
-            title="first Post"
-            link="https://x.com/Anish_2210/status/1880311958324576764/photo/1"
-            type="twitter"
-          />
-          <Card
-            title="first Video"
-            link="https://www.youtube.com/watch?v=641_goNZGog"
-            type="youtube"
-          />
+          {contents.map(({ type, link, title }) => (
+            <Card type={type} link={link} title={title} />
+          ))}
         </div>
       </div>
     </div>

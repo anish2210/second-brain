@@ -1,9 +1,37 @@
+import { useRef, useState } from "react";
 import { CrossIcon } from "../icons/CrossIcon";
 import { TickMarkIcon } from "../icons/TickMarkIcon";
 import { Button } from "./Button";
 import { Input } from "./Input";
+import axios from "axios";
+
+enum ContentType {
+  Youtube = "youtube",
+  Twitter = "twitter",
+}
 
 export function CreateComponentModal({ open, onClose }) {
+  const titleRef = useRef<HTMLInputElement>();
+  const linkRef = useRef<HTMLInputElement>();
+
+  const [type, setType] = useState(ContentType.Youtube);
+
+  async function addContent() {
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/v1/content`;
+    const title = titleRef.current?.value;
+    const link = linkRef.current?.value;
+    await axios.post(url, {
+      title,
+      link,
+      type,
+    },{
+      headers:{
+        "Authorization":localStorage.getItem("token")
+      }
+    });
+    onClose()
+  }
+
   return (
     <div>
       {open && (
@@ -21,14 +49,40 @@ export function CreateComponentModal({ open, onClose }) {
                 </div>
               </div>
               <div className="flex flex-col gap-4">
-                <Input placeholder={"Title"} />
-                <Input placeholder={"Link"} />
+                <Input reference={titleRef} placeholder={"Title"} />
+                <Input reference={linkRef} placeholder={"Link"} />
+              </div>
+              <div>
+                <div className="text-white">
+                  <h1>Content Type</h1>
+                </div>
+                <div className="flex justify-between p-2">
+                  <Button
+                    text="Youtube"
+                    variant={
+                      type === ContentType.Youtube ? "primary" : "secondary"
+                    }
+                    onClick={() => {
+                      setType(ContentType.Youtube);
+                    }}
+                  />
+                  <Button
+                    text="Twitter"
+                    variant={
+                      type === ContentType.Twitter ? "primary" : "secondary"
+                    }
+                    onClick={() => {
+                      setType(ContentType.Twitter);
+                    }}
+                  />
+                </div>
               </div>
               <div>
                 <Button
                   variant="primary"
                   text="Add"
                   startIcon={<TickMarkIcon size="md" />}
+                  onClick={addContent}
                 />
               </div>
             </span>
@@ -38,5 +92,3 @@ export function CreateComponentModal({ open, onClose }) {
     </div>
   );
 }
-
-

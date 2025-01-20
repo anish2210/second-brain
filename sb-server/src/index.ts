@@ -60,9 +60,11 @@ app.post("/api/v1/signin", async (req, res) => {
 
 app.post("/api/v1/content", userMiddleware, async (req, res) => {
   const link = req.body.link;
+  const type = req.body.type;
   const title = req.body.title;
   await ContentModel.create({
     link,
+    type,
     title,
     // @ts-ignore
     userId: req.userId,
@@ -110,7 +112,7 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
     });
     if (existingLink) {
       res.json({
-        msg: "/share/" + existingLink.hash,
+        msg: "/brain/" + existingLink.hash,
       });
       return;
     }
@@ -121,7 +123,7 @@ app.post("/api/v1/brain/share", userMiddleware, async (req, res) => {
       hash: hash,
     });
     res.json({
-      msg: "/share/" + hash,
+      msg: "/brain/" + hash,
     });
   } else {
     await LinkModel.deleteOne({
