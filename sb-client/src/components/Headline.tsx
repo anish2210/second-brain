@@ -6,8 +6,8 @@ export function Headline() {
   return (
     <div className="flex flex-col items-center text-center">
       <h1 className="px-10 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray md:text-5xl lg:text-6xl dark:text-white">
-        <Typewriter words={["Store From", "Revisit", "Learn from"]}
-        loop={10}
+        <Typewriter words={["Store In", "Revisit", "Learn From"]}
+        loop={100}
         typeSpeed={70}
         deleteSpeed={50}
         delaySpeed={1000} /> 
