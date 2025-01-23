@@ -23,6 +23,7 @@ export function SignIn() {
     const jwt = response.data.token;
     localStorage.setItem("token", jwt);
     navigate("/dashboard")
+    window.location.reload();
   }
 
   return (

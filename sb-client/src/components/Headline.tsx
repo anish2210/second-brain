@@ -1,8 +1,18 @@
 import { Typewriter } from "react-simple-typewriter";
 import { BrainIcon } from "../icons/BrainIcon";
 import { Button } from "./Button";
+import { useNavigate } from "react-router-dom";
 
 export function Headline() {
+  const navigate = useNavigate();
+  const isAuthenticated = Boolean(localStorage.getItem('token'));
+  function redirect(){
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    } else {
+      navigate("/signin");
+    }
+  }
   return (
     <div className="flex flex-col items-center text-center">
       <h1 className="px-10 mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray md:text-5xl lg:text-6xl dark:text-white">
@@ -23,6 +33,7 @@ export function Headline() {
           variant="secondary"
           text="Get Started"
           startIcon={<BrainIcon />}
+          onClick={redirect}
         />
       </div>
     </div>
