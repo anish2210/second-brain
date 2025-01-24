@@ -11,8 +11,8 @@ import { SidebarItem } from "./SidebarItem";
 
 export function Sidebar() {
   const navigate = useNavigate();
-  function logout () {
-    localStorage.removeItem('token')
+  function logout() {
+    localStorage.removeItem("token");
     navigate("/");
     window.location.reload();
   }
@@ -34,13 +34,15 @@ export function Sidebar() {
             <SidebarItem icon={<TagIcon size="md" />} tabName="Tag" />
           </div>
         </div>
-        <div className="p-4">
-          <Button
-            variant="secondary"
-            text="Logout"
-            startIcon={<LogoutIcon size="md" />}
-            onClick={logout}
-          />
+        <div className="p-4 mb-4 flex justify-center">
+          <div>
+            <Button
+              variant="secondary"
+              text="Logout"
+              startIcon={<LogoutIcon size="md" />}
+              onClick={logout}
+            />
+          </div>
         </div>
       </div>
     </div>

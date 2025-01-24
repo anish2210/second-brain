@@ -11,15 +11,15 @@ import axios from "axios";
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
-  const {contents, refresh} = useContent();
+  const { contents, refresh } = useContent();
   const url = import.meta.env.VITE_BACKEND_URL;
 
-  useEffect(()=>{
-    refresh()
-  }, [modalOpen])
-  
+  useEffect(() => {
+    refresh();
+  }, [modalOpen]);
+
   return (
-    <div className="bg-green-600 min-h-screen">
+    <div className="bg-green-600 h-full min-h-[100vh]">
       <div className="">
         <Sidebar />
       </div>
@@ -35,14 +35,18 @@ export function Dashboard() {
           <div className="text-white text-2xl font-bold">All Notes</div>
           <div className="flex gap-4 justify-end">
             <Button
-              onClick={async ()=>{
-                const response = await axios.post(`${url}/api/v1/brain/share`, {
-                  share: true
-                }, {
-                  headers:{
-                    "Authorization": localStorage.getItem("token")
+              onClick={async () => {
+                const response = await axios.post(
+                  `${url}/api/v1/brain/share`,
+                  {
+                    share: true,
+                  },
+                  {
+                    headers: {
+                      Authorization: localStorage.getItem("token"),
+                    },
                   }
-                });
+                );
                 const shareUrl = `${url}/api/v1${response.data.msg}`;
                 navigator.clipboard.writeText(shareUrl);
                 alert("Share URL copied to clipboard.");
@@ -61,10 +65,19 @@ export function Dashboard() {
             />
           </div>
         </div>
-        <div className="flex flex-wrap gap-4 pt-4 items-start">
-          {contents.map(({ type, link, title }) => (
-            <Card type={type} link={link} title={title} />
-          ))}
+        <div className="flex flex-wrap pt-4 gap-6 items-start">
+          {contents.length > 0 ? (
+            contents.map(({ type, link, title }) => (
+              <Card key={link} type={type} link={link} title={title} />
+            ))
+          ) : (
+            <div className="absolute inset-0 flex pl-80 items-center justify-center pointer-events-none">
+              <div className="text-green-400 text-center text-2xl font-bold">
+                No content available. <br />
+                Click "Add Content" to create a new note.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
