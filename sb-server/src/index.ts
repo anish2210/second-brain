@@ -20,6 +20,15 @@ app.get("/", (req, res) => {
 
 app.post("/api/v1/signup", async (req, res) => {
   const { userName, userEmail } = req.body;
+
+  const existingUser = await userModel.findOne({userEmail});
+  if (existingUser) {
+    res.status(409).json({
+      msg:"User already exists. Please use a different email."
+    })
+    return;
+  }
+
   const password = hashPassword(req.body.password);
   await userModel.create({ userEmail, userName, password });
   res.json({

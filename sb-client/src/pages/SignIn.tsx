@@ -4,6 +4,7 @@ import { Input } from "../components/Input";
 import { TickMarkIcon } from "../icons/TickMarkIcon";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BackgroundBeams } from "../components/background-beams";
 
 export function SignIn() {
 
@@ -28,14 +29,15 @@ export function SignIn() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-green-600">
-      <div className="bg-green-400 shadow-lg rounded-lg p-8 w-full max-w-md">
+          <BackgroundBeams/>
+      <div className="bg-green-400 shadow-lg rounded-lg p-8 w-full max-w-md z-10">
         <h2 className="text-2xl font-bold text-center text-white mb-6">
           Sign In
         </h2>
         <div className="flex justify-center">
           <div className="flex flex-col gap-4 mb-6">
-            <Input reference={usernameRef} placeholder="User Name" />
-            <Input reference={passwordRef} placeholder="Password" />
+            <Input reference={usernameRef} placeholder="Username" />
+            <Input reference={passwordRef} placeholder="Password" type="password" />
           </div>
         </div>
 
