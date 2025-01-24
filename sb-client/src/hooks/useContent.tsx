@@ -1,32 +1,30 @@
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 
 export function useContent() {
   const [contents, setContents] = useState([]);
+  const url = import.meta.env.VITE_BACKEND_URL;
 
-  const url = `${import.meta.env.VITE_BACKEND_URL}/api/v1/content`;
+  const fetchContents = async () => {
+    try {
+      const response = await axios.get(`${url}/api/v1/content`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      setContents(response.data.content || []);
+    } catch (error) {
+      console.error("Error fetching content:", error);
+    }
+  };
 
-  function refresh() {
-    axios
-        .get(url, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          setContents(response.data.content);
-        });
-  }
+  const refresh = () => {
+    fetchContents();
+  };
 
   useEffect(() => {
-    refresh();
-    const interval = setInterval(() => {
-      refresh()
-    }, 10 * 1000)
-    return () => {
-      clearInterval(interval);
-    }
+    fetchContents();
   }, []);
 
-  return {contents, refresh};
+  return { contents, refresh };
 }

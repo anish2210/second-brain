@@ -76,14 +76,28 @@ app.post("/api/v1/content", userMiddleware, async (req, res) => {
 });
 
 app.get("/api/v1/content", userMiddleware, async (req, res) => {
-  // @ts-ignore
-  const userId = req.userId;
-  const content = await ContentModel.find({
-    userId,
-  }).populate("userId", "userName");
-  res.json({
-    content,
-  });
+  try {
+    // @ts-ignore
+    const userId = req.userId;
+
+    // Extract query parameters
+    const { title, link } = req.query;
+
+    // Build the query object
+    const query = { userId }; // Always filter by userId
+    // @ts-ignore
+    if (title) query.title = title; // Add title filter if provided
+    // @ts-ignore
+    if (link) query.link = link; // Add link filter if provided
+
+    // Fetch content based on the query
+    const content = await ContentModel.find(query).populate("userId", "userName");
+
+    res.json({ content });
+  } catch (error) {
+    console.error("Error fetching content:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.delete("/api/v1/content", userMiddleware, async (req, res) => {

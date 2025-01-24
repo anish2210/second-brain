@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import "../App.css";
-import { Button } from "../components/Button";
-import { Card } from "../components/Card";
-import { CreateComponentModal } from "../components/CreateContentModal";
-import { PlusIcon } from "../icons/PlusIcon";
-import { ShareIcon } from "../icons/ShareIcon";
 import { Sidebar } from "../components/Sidebar";
-import { useContent } from "../hooks/useContent";
+import { CreateComponentModal } from "../components/CreateContentModal";
+import { Button } from "../components/Button";
+import { ShareIcon } from "../icons/ShareIcon";
 import axios from "axios";
+import { PlusIcon } from "../icons/PlusIcon";
+import { Card } from "../components/Card";
+import { useContent } from "../hooks/useContent";
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -68,7 +67,13 @@ export function Dashboard() {
         <div className="flex flex-wrap pt-4 gap-6 items-start">
           {contents.length > 0 ? (
             contents.map(({ type, link, title }) => (
-              <Card key={link} type={type} link={link} title={title} />
+              <Card
+                key={link}
+                type={type}
+                link={link}
+                title={title}
+                onDelete={refresh} // Pass refresh to update the content list after deletion
+              />
             ))
           ) : (
             <div className="absolute inset-0 flex pl-80 items-center justify-center pointer-events-none">
