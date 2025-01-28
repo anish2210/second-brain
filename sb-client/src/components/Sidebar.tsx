@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BrainIcon } from "../icons/BrainIcon";
 import { DocIcon } from "../icons/DocIcon";
 import { LinkIcon } from "../icons/LinkIcon";
@@ -20,12 +20,12 @@ export function Sidebar() {
     <div className="bg-green-600 h-screen text-green-100 fixed border-r-2 border-green-400 w-64">
       <div className="flex flex-col h-full justify-between">
         <div>
-          <a href="/">
+          <Link to="/">
             <div className="flex items-center gap-4 p-4">
               <BrainIcon />
               <div className="font-bold text-xl text-white">Second Brain</div>
             </div>
-          </a>
+          </Link>
           <div>
             <SidebarItem icon={<TweetIcon size="md" />} tabName="Twitter" />
             <SidebarItem icon={<YoutubeIcon size="md" />} tabName="Youtube" />
