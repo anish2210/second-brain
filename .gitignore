@@ -1,0 +1,3 @@
+# Ignore .env files from client and server folders
+sb-client/.env
+sb-server/.env
