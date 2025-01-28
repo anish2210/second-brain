@@ -12,7 +12,12 @@ enum ContentType {
   Twitter = "twitter",
 }
 
-export function CreateComponentModal({ open, onClose }) {
+interface CreateComponentModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export function CreateComponentModal({ open, onClose }:CreateComponentModalProps) {
   const titleRef = useRef<HTMLInputElement>();
   const linkRef = useRef<HTMLInputElement>();
 
