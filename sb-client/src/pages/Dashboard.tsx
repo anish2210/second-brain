@@ -9,7 +9,7 @@ import { Card } from "../components/Card";
 import { useContent } from "../hooks/useContent";
 
 interface Content {
-  type: string;
+  type: any;
   link: string;
   title: string;
 }
