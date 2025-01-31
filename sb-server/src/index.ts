@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { ContentModel, LinkModel, userModel } from "./database/model";
 import { comparePassword, hashPassword, random } from "./utils/helpers";
+import { getURLMetadata } from "./utils/urlMetadata";
 import dotenv from "dotenv";
 import { userMiddleware } from "./middleware/middleware";
 import cors from "cors";
@@ -16,6 +17,23 @@ const PORT = 3000;
 
 app.get("/", (req, res) => {
   res.send("Your server is up and running well !");
+});
+
+// New endpoint for fetching URL metadata
+
+app.get("/api/v1/metadata", async (req, res) => {
+  try {
+    const url = req.query.url as string;
+    
+    // if (!url) {
+    //   return res.status(400).json({ error: 'URL parameter is required' });
+    // }
+    const metadata = await getURLMetadata(url);
+    res.json(metadata);
+    
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
 });
 
 app.post("/api/v1/signup", async (req, res) => {
@@ -67,21 +85,38 @@ app.post("/api/v1/signin", async (req, res) => {
   });
 });
 
+// Modified content creation endpoint to automatically fetch metadata
 app.post("/api/v1/content", userMiddleware, async (req, res) => {
-  const link = req.body.link;
-  const type = req.body.type;
-  const title = req.body.title;
-  await ContentModel.create({
-    link,
-    type,
-    title,
-    // @ts-ignore
-    userId: req.userId,
-    tags: [],
-  });
-  res.json({
-    msg: "Content added",
-  });
+  try {
+    const { link, type } = req.body;
+    
+    // Fetch metadata for the URL
+    const metadata = await getURLMetadata(link);
+    
+    await ContentModel.create({
+      link,
+      type,
+      title: metadata.title, // Use metadata title instead of manual title
+      // @ts-ignore
+      userId: req.userId,
+      tags: [],
+      metadata: {
+        description: metadata.description,
+        image: metadata.image,
+        siteName: metadata.siteName,
+        favicon: metadata.favicon
+      }
+    });
+    
+    res.json({
+      msg: "Content added with metadata",
+      metadata
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to add content: " + (error as Error).message
+    });
+  }
 });
 
 app.get("/api/v1/content", userMiddleware, async (req, res) => {
