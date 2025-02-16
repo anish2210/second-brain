@@ -3,7 +3,7 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { TickMarkIcon } from "../icons/TickMarkIcon";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BackgroundBeams } from "../components/background-beams";
 
 export function SignUp() {
@@ -86,9 +86,9 @@ export function SignUp() {
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-100">
             Already have an account?{" "}
-            <a href="/signin" className="text-green-200 hover:underline">
+            <Link to="/signin" className="text-green-200 hover:underline">
               Sign In
-            </a>
+            </Link>
           </p>
         </div>
       </div>

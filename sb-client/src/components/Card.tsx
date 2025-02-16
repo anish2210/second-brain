@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { DeleteIcon } from "../icons/DeleteIcon";
 import { ShareIcon } from "../icons/ShareIcon";
 import axios from "axios";
@@ -60,9 +61,9 @@ export function Card({ title, link, type, onDelete }: CardProps) {
           <div className="px-4">{title}</div>
         </div>
         <div className="flex items-center justify-between min-w-10">
-          <a href={link} target="_blank" rel="noopener noreferrer">
+          <Link to={link} target="_blank" rel="noopener noreferrer">
             <ShareIcon size="md" />
-          </a>
+          </Link>
           <button onClick={handleDelete}>
             <DeleteIcon size="md" />
           </button>
@@ -72,7 +73,7 @@ export function Card({ title, link, type, onDelete }: CardProps) {
       <div className="font-bold text-xl py-2">
         {type === "twitter" && (
           <blockquote className="twitter-tweet">
-            <a href={link.replace("x.com", "twitter.com")}></a>
+            <Link to={link.replace("x.com", "twitter.com")}></Link>
           </blockquote>
         )}
 
