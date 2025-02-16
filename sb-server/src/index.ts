@@ -6,6 +6,7 @@ import { comparePassword, hashPassword, random } from "./utils/helpers";
 import dotenv from "dotenv";
 import { userMiddleware } from "./middleware/middleware";
 import cors from "cors";
+import path from 'path';
 
 dotenv.config();
 
@@ -181,6 +182,15 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
     userName: user?.userName,
     content: content,
   });
+});
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../../sb-client/dist')));
+
+// The "catch all" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../sb-client/dist/index.html'));
 });
 
 app.listen(PORT, () => {
